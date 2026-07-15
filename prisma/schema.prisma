@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vendor {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+
+  @@map("vendors")
+}
+
+model Channel {
+  id                String             @id @default(uuid())
+  name              String             @unique
+  type              String
+  rateLimitPerSec   Int                @default(2)
+  isSourceOfTruth   Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  inventoryRecords  InventoryRecord[]
+  syncLogs          SyncLog[]
+
+  @@map("channels")
+}
+
+model Product {
+  id               String             @id @default(uuid())
+  sku              String             @unique
+  title            String
+  vendorId         String
+  vendor           Vendor             @relation(fields: [vendorId], references: [id])
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  inventoryRecords InventoryRecord[]
+
+  @@map("products")
+}
+
+model InventoryRecord {
+  id         String   @id @default(uuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  channelId  String
+  channel    Channel  @relation(fields: [channelId], references: [id])
+  quantity   Int
+  reportedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([productId, channelId])
+  @@map("inventory_records")
+}
+
+model SyncLog {
+  id           String    @id @default(uuid())
+  sku          String
+  channelId    String?
+  channel      Channel?  @relation(fields: [channelId], references: [id])
+  eventType    String
+  status       String
+  message      String?
+  payload      Json?
+  webhookEventId String? @unique
+  createdAt    DateTime  @default(now())
+
+  @@index([sku])
+  @@index([status])
+  @@map("sync_logs")
+}
