@@ -19,4 +19,5 @@ export const env = {
   jwtSecret: required("JWT_SECRET", "dev-secret-change-me"),
   testUserEmail: process.env.TEST_USER_EMAIL ?? "admin@example.com",
   testUserPassword: process.env.TEST_USER_PASSWORD ?? "password123",
+  shopifyWebhookSecret: required("SHOPIFY_WEBHOOK_SECRET", "dev-shopify-webhook-secret"),
 };

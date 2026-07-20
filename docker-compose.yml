@@ -40,6 +40,7 @@ services:
       JWT_SECRET: dev-secret-change-me
       TEST_USER_EMAIL: admin@example.com
       TEST_USER_PASSWORD: password123
+      SHOPIFY_WEBHOOK_SECRET: dev-shopify-webhook-secret
     depends_on:
       postgres:
         condition: service_healthy

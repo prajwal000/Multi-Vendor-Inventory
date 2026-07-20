@@ -10,12 +10,18 @@ import { healthRouter } from "./routes/health";
 import { inventoryRouter } from "./routes/inventory";
 import { productsRouter } from "./routes/products";
 import { vendorsRouter } from "./routes/vendors";
+import { shopifyWebhooksRouter } from "./routes/webhooks";
 
 export function createApp() {
   const app = express();
 
   app.use(helmet());
   app.use(cors());
+
+  // Mounted before express.json() — webhook routes parse their own raw body
+  // (needed for HMAC verification) ahead of the app-wide JSON parser.
+  app.use(shopifyWebhooksRouter);
+
   app.use(express.json());
 
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

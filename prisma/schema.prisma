@@ -32,14 +32,15 @@ model Channel {
 }
 
 model Product {
-  id               String             @id @default(uuid())
-  sku              String             @unique
-  title            String
-  vendorId         String
-  vendor           Vendor             @relation(fields: [vendorId], references: [id])
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  inventoryRecords InventoryRecord[]
+  id                      String             @id @default(uuid())
+  sku                     String             @unique
+  title                   String
+  vendorId                String
+  vendor                  Vendor             @relation(fields: [vendorId], references: [id])
+  shopifyInventoryItemId  String?            @unique
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+  inventoryRecords        InventoryRecord[]
 
   @@map("products")
 }
